@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js')}}"></script>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+    </nav>
+    <h1>Shop for your favourite useless items</h1>
+    <form method="GET">
+    <ul>
+        {% for product in products %}
+            <li>{{ product["name"] }} - {{ product["currency"]}} {{ product["price"] }}
+                <ul>
+                    <li>{{ product["description"] }}</li>
+                    <li>
+                        <button class="productBtn" type="button"
+                                data-product='{
+                                "id": "{{ product["_id"] }}",
+                                "name": "{{ product["name"] }}",
+                                "price": "{{ product["price"] }}",
+                                "currency": "{{ product["currency"] }}"
+                                }'
+                                value="{{product['name']}}">Add Cart</button>
+                    </li>
+                </ul>
+            </li>
+        {% endfor %}
+        <button id="checkout" name="checkout">Checkout</button>
+    </ul>
+    </form>
+    <div id="listCheckout"></div>
+    <div>Total: $ <span id="totalPrice">0.00</span></div>
+</body>
+</html>
