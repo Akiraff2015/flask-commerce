@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, redirect, url_for
+from flask import Flask, render_template, session, request, redirect, url_for, flash
 from flask_pymongo import PyMongo
 import pymongo
 import pymongo.errors
@@ -77,15 +77,23 @@ def create_product():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register_user():
+    error = None
     if request.method == 'POST':
-        try:
-            hash_password = bcrypt.hashpw(request.form['username'].encode("utf-8"), bcrypt.gensalt(10))
-            mongo.db.users.insert({"username": request.form["username"], "password": hash_password})
-            return "Success"
-        except pymongo.errors.DuplicateKeyError:
-            return "This account have been created!"
+        if request.form['password'] == request.form['confirm_password']:
+            try:
+                hash_password = bcrypt.hashpw(request.form['password'].encode("utf-8"), bcrypt.gensalt(10))
+                mongo.db.users.insert({"username": request.form["username"], "password": hash_password})
+                return "Success"
+            except pymongo.errors.DuplicateKeyError:
+                error = "Please choose a unique username!"
+                flash(error)
+                return render_template('register.html', error=error)
+        else:
+            error = "The password you type in does not match"
+            flash(error)
+            return render_template('register.html', error=error)
     else:
-        return render_template('register.html')
+        return render_template('register.html', error=error)
 
 
 @app.route('/shop', methods=['GET'])

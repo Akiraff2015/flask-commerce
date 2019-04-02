@@ -1,14 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Register</title>
-</head>
-<body>
-    <form action="/register" method="POST">
-        Username: <input type="text" name="username"> <br>
-        Password: <input type="password" name="password"> <br>
-        <input type="submit" name="submit" value="Register">
-    </form>
-</body>
-</html>
+{% extends "./layout/base.html" %}
+{% block content %}
+<form action="/register" method="POST">
+    <div class="columns">
+        <div class="column is-4 is-offset-4">
+            <h1>Register to Alkatrex</h1>
+            <h4>We have delicious baked potatoes 🥔</h4>
+
+            <div class="error-field">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="notification is-danger">
+                                <button class="delete"></button>
+                                <p>{{ message }}</p>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+            <div class="field">
+                <label for="username" class="label">Username</label>
+                <input id="username" type="text" class="input" name="username">
+            </div>
+
+            <div class="field">
+                <label for="password" class="label">Password</label>
+                <input id="password" class="input" type="password" name="password">
+            </div>
+
+            <div class="field">
+                <label for="confirm_password" class="label">Confirm Password</label>
+                <input id="confirm_password" type="password" class="input" name="confirm_password">
+            </div>
+
+            <input class="button is-danger" type="submit" name="submit" value="Register">
+
+        </div>
+    </div>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {(
+        document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+            $notification = $delete.parentNode;
+            $delete.addEventListener('click', () => {
+                $notification.parentNode.removeChild($notification);
+            });
+        });
+    });
+</script>
+{% endblock %}

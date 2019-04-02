@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+        <meta charset="UTF-8">
+        <title>{% block title %}{{title if title else 'Alkatrex' }}{% endblock %}</title>
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% endblock %}
+</head>
+<body>
+<div class="container">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">ALKATREX</a>
+            <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+               data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a href="/shop" class="navbar-item">Shop</a>
+                <a href="/orders" class="navbar-item">Orders</a>
+            </div>
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    {% if session.login %}
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">Welcome back {{ session.user }}!</a>
+
+                        <div class="navbar-dropdown">
+                            <a href="/orders" class="navbar-item">Order <span class="badge">0</span></a>
+                            <a href="/contact" class="navbar-item">Contact Us</a>
+                            <a href="/logout" class="navbar-item">Logout</a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="buttons">
+                        <a href="/register" class="button is-primary"><strong>Sign up</strong></a>
+                        <a href="/login" class="button is-light">Log in</a>
+                    </div>
+                    {% endif %}
+                </div>
+                <span class="navbar-item"><i class="fa fa-shopping-cart fa-2x" aria-hidden="true"></i></span>
+            </div>
+        </div>
+    </nav>
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+</html>

@@ -3,16 +3,17 @@ html, body {
     padding: 0;
 }
 
-table {
-    border-collapse: collapse;
-    width: 100%
+.badge {
+    background-color: #EEEEEE;
+    border-radius: 5px;
 }
 
-table, th, td{
-    border: 1px solid black;
+h1 {
+    font-size: 34px;
 }
 
-th, td {
-    padding: 8px;
-    text-align: center;
+.error-field {
+    margin: 10px 0;
 }
+
+.text-center { text-align: center; }
