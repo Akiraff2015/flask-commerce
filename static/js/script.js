@@ -4,15 +4,43 @@ $(function() {
     let totalPrice = 0
     const add = (a, b) => parseFloat(a) + parseFloat(b);
 
-    $('#listCheckout').css({'display': 'none'});
+    count = (ary, classifier) => {
+        classifier = classifier || String;
+        return ary.reduce((counter, item) => {
+            var p = classifier(item);
+            counter[p] = counter.hasOwnProperty(p) ? counter[p] + 1 : 1;
+            return counter;
+        }, {})
+    };
+
+    const getPrice = (arr, name) => {
+        let itemPrice = 0;
+        let findPrince = arr.forEach(val => {
+            if (val.name.localeCompare(name) == 0) {
+                 itemPrice = val.price
+             }
+        });
+        return itemPrice;
+     }
 
     $('.productBtn').on('click', function() {
         cart.push($(this).data('product'));
-        $('#listCheckout').empty();
-        cart.forEach(val => {
-            $('#listCheckout').append(`<p>${val.currency} ${val.price} - ${val.name}</p>`);
+        countByItem = count(cart, function(i) {
+            return i.name;
         });
-        $('#listCheckout').append('<input id="confirmBtn" type="submit" value="Confirm" />');
+
+        const entries = Object.entries(countByItem);
+        $('#listCheckout').empty();
+        entries.forEach(val => {
+            console.log(cart);
+            $('#listCheckout').append(`
+                <tr>
+                    <td>${val[0]}</td>
+                    <td>$${getPrice(cart, val[0])} </td>
+                    <td>${val[1]}</td>
+                </tr>
+            `);
+        });
 
         let total = () => {
             if (cart.length == 1) return cart[0].price;
@@ -26,12 +54,7 @@ $(function() {
         };
         totalPrice = total();
 
-        $('#totalPrice').text(total());
-    });
-
-    $('#checkout').click(function(e) {
-        e.preventDefault();
-        $('#listCheckout').css({'display': 'block'});
+        $('.totalPrice').text(total());
     });
 
     $(document).on('click', '#confirmBtn', function(e) {
@@ -46,4 +69,8 @@ $(function() {
             console.log("Data been sent!")
         });
     });
+
+    let arrModal = ['.modal-background', '.delete', '#shoppingCart', '#cancelBtn'];
+    arrModal.forEach(val => $(val).on('click', () =>  $('.modal').toggleClass('is-active')));
+
 });

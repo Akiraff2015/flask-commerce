@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     {% block head %}
-        <meta charset="UTF-8">
-        <title>{% block title %}{{title if title else 'Alkatrex' }}{% endblock %}</title>
-        <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
-        <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <title>{% block title %}{{title if title else 'Alkatrex' }}{% endblock %}</title>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% endblock %}
 </head>
 <body>
@@ -30,29 +30,61 @@
                 <a href="/orders" class="navbar-item">Orders</a>
             </div>
 
-            <div class="navbar-end">
-                <div class="navbar-item">
-                    {% if session.login %}
-                    <div class="navbar-item has-dropdown is-hoverable">
-                        <a class="navbar-link">Welcome back {{ session.user }}!</a>
+            <div class="navbar-item">
+                {% if session.login %}
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">Welcome back {{ session.user }}!</a>
 
-                        <div class="navbar-dropdown">
-                            <a href="/orders" class="navbar-item">Order <span class="badge">0</span></a>
-                            <a href="/contact" class="navbar-item">Contact Us</a>
-                            <a href="/logout" class="navbar-item">Logout</a>
-                        </div>
+                    <div class="navbar-dropdown">
+                        <a href="/orders" class="navbar-item">Order <span class="badge">0</span></a>
+                        <a href="/contact" class="navbar-item">Contact Us</a>
+                        <a href="/logout" class="navbar-item">Logout</a>
                     </div>
-                    {% else %}
-                    <div class="buttons">
-                        <a href="/register" class="button is-primary"><strong>Sign up</strong></a>
-                        <a href="/login" class="button is-light">Log in</a>
-                    </div>
-                    {% endif %}
                 </div>
-                <span class="navbar-item"><i class="fa fa-shopping-cart fa-2x" aria-hidden="true"></i></span>
+                {% else %}
+                <div class="buttons">
+                    <a href="/register" class="button is-primary"><strong>Sign up</strong></a>
+                    <a href="/login" class="button is-light">Log in</a>
+                </div>
+                {% endif %}
             </div>
+            <span class="navbar-item"><i id="shoppingCart" class="fa fa-shopping-cart fa-2x" aria-hidden="true"></i></span>
+            <span class="navbar-item">$ <span class="totalPrice">0.00</span></span>
         </div>
     </nav>
+
+    <div class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">My Cart</p>
+                <button class="delete" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body">
+                <table class="table is-fullwidth is-hoverable">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                    </thead>
+                    <tbody id="listCheckout">
+                    </tbody>
+                    <tfooter>
+                        <tr>
+                            <th>Total</th>
+                            <td colspan="2">$ <span class="totalPrice">0.00</span></td>
+                        </tr>
+                    </tfooter>
+                </table>
+            </section>
+            <footer class="modal-card-foot">
+                <button id="confirmBtn" class="button is-success">Checkout</button>
+                <button id="cancelBtn" class="button is-danger">Cancel</button>
+            </footer>
+        </div>
+    </div>
     {% block content %}
     {% endblock %}
 </div>

@@ -1,92 +1,92 @@
 {% extends "./layout/base.html" %}
 
 {% block content %}
-    <main>
-        <form action="/create/product" method="POST">
-            <div class="columns">
-                <div class="column is-6 is-offset-3">
-                    <h1>Create new product</h1>
-                    <div class="field">
-                        <label for="name" class="label">Name</label>
-                        <input id="name" type="text" class="input" name="name">
-                    </div>
-
-                    <div class="field">
-                        <label for="quantity" class="label">Quantity</label>
-                        <input id="quantity" type="number" class="input" name="quantity">
-                    </div>
-
-                    <div class="field">
-                        <label class="label" for="price">Price</label>
-                        <input id="price" type="number" class="input" step="0.01" name="price">
-                    </div>
-
-                    <div class="field">
-                        <label class="label" for="currency">Currency</label>
-                        <input id="currency" class="input" type="text" name="currency" value="USD">
-                    </div>
-
-                    <div class="field">
-                        <label for="description" class="label">Description</label>
-                        <input id="description" class="input" type="text" name="description">
-                    </div>
-
-                    <input class="button is-primary" type="submit" value="Create Product">
+<main>
+    <form action="/create/product" method="POST">
+        <div class="columns">
+            <div class="column is-6 is-offset-3">
+                <h1>Create new product</h1>
+                <div class="field">
+                    <label for="name" class="label">Name</label>
+                    <input id="name" type="text" class="input" name="name">
                 </div>
-            </div>
-        </form>
-        <h1>List of useless products: </h1>
-        <table class="table is-bordered is-fullwidth is-hoverable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for product in products %}
-                <tr>
-                    <td>{{ product["_id"] }}</td>
-                    <td>{{ product["name"] }}</td>
-                    <td>{{product["currency"]}} {{ product["price"] }}</td>
-                    <td>{{ product["quantity"] }}</td>
-                    <td>{{ product["description"] }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
 
-        <h1>List of useless purchases: </h1>
-        <table class="table is-bordered is-fullwidth is-hoverable">
-            <thead>
-                <tr>
-                    <th>Transaction History</th>
-                    <th>Username</th>
-                    <th>Items</th>
-                    <th>Total Price</th>
-                    <th>Shipped?</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for transaction in transactions %}
-                <tr>
-                    <td>{{ transaction["_id"] }}</td>
-                    <td>{{ transaction["profile"] }}</td>
-                    <td>
-                        <ul>
-                            {% for cart in transaction["cart"] %}
-                                <li>{{ cart.name }} - {{cart.currency}} {{ cart.price }}</li>
-                            {% endfor %}
-                        </ul>
-                    </td>
-                    <td>{{ transaction["cart"][0].currency}} {{ transaction["total"] }}</td>
-                    <td>No</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </main>
+                <div class="field">
+                    <label for="quantity" class="label">Quantity</label>
+                    <input id="quantity" type="number" class="input" name="quantity">
+                </div>
+
+                <div class="field">
+                    <label class="label" for="price">Price</label>
+                    <input id="price" type="number" class="input" step="0.01" name="price">
+                </div>
+
+                <div class="field">
+                    <label class="label" for="currency">Currency</label>
+                    <input id="currency" class="input" type="text" name="currency" value="USD">
+                </div>
+
+                <div class="field">
+                    <label for="description" class="label">Description</label>
+                    <input id="description" class="input" type="text" name="description">
+                </div>
+
+                <input class="button is-primary" type="submit" value="Create Product">
+            </div>
+        </div>
+    </form>
+    <h1>List of useless products: </h1>
+    <table class="table is-bordered is-fullwidth is-hoverable">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product["_id"] }}</td>
+            <td>{{ product["name"] }}</td>
+            <td>{{product["currency"]}} {{ product["price"] }}</td>
+            <td>{{ product["quantity"] }}</td>
+            <td>{{ product["description"] }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h1>List of useless purchases: </h1>
+    <table class="table is-bordered is-fullwidth is-hoverable">
+        <thead>
+        <tr>
+            <th>Transaction History</th>
+            <th>Username</th>
+            <th>Items</th>
+            <th>Total Price</th>
+            <th>Shipped?</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for transaction in transactions %}
+        <tr>
+            <td>{{ transaction["_id"] }}</td>
+            <td>{{ transaction["profile"] }}</td>
+            <td>
+                <ul>
+                    {% for cart in transaction["cart"] %}
+                    <li>{{ cart.name }} - {{cart.currency}} {{ cart.price }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+            <td>{{ transaction["cart"][0].currency}} {{ transaction["total"] }}</td>
+            <td>No</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</main>
 {% endblock %}
