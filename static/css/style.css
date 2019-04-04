@@ -17,3 +17,27 @@ h1 {
 }
 
 .text-center { text-align: center; }
+
+.card-equal-height {
+   display: flex;
+   flex-direction: column;
+   height: 100%;
+}
+.card-equal-height .card-footer {
+  margin-top: auto;
+}
+
+.btn-add-cart-position {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+
+.navbar {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+/*TODO: Wacky fix? Add inside media query for tablet sizes or higher */
+.navbar.is-fixed-top {
+    margin: 0 2em;
+}

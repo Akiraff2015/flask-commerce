@@ -1,9 +1,9 @@
-from flask import Flask, render_template, session, request, redirect, url_for, flash
+from flask import Flask, render_template, session, request, redirect, url_for, flash, Response
 from flask_pymongo import PyMongo
 import pymongo
 import pymongo.errors
+from bson import json_util
 from bson.objectid import ObjectId
-from flask_session import Session
 import bcrypt
 import json
 import os
@@ -62,17 +62,46 @@ def dashboard():
         return redirect(url_for('login_user'))
 
 
+@app.route('/api/products/all', methods=['GET'])
+def products_all():
+    # TODO: move api key to .env or json file
+    API_KEY_VALUE = 'test'
+    auth = request.headers.get('x-api-key')
+    if auth == API_KEY_VALUE:
+        if mongo.db.products.count() > 0:
+            products = mongo.db.products.find({})
+            return Response(json_util.dumps({
+                "data": products,
+                "status": 200
+            }), mimetype='application/json', status=200)
+        else:
+            return Response(json_util.dumps({
+                "message": "No content available.",
+                "status": 203
+            }), mimetype='application/json', status=203)
+
+    return Response(json_util.dumps({
+            "message": "Invalid API key",
+            "status": 403
+        }), mimetype='application/json', status=403)
+
+
 @app.route('/create/product', methods=['POST'])
 def create_product():
-    if request.method == 'POST':
-        mongo.db.products.insert({
-            "name": request.form['name'],
-            "quantity": int(request.form['quantity']),
-            "price": float(request.form['price']),
-            "description": request.form['description'],
-            "currency": request.form['currency']
-        })
-        return redirect(url_for('dashboard'))
+    if 'login' in session:
+        if request.method == 'POST':
+            mongo.db.products.insert({
+                "name": request.form['name'],
+                "quantity": int(request.form['quantity']),
+                "price": float(request.form['price']),
+                "description": request.form['description'],
+                "currency": request.form['currency']
+            })
+            return redirect(url_for('dashboard'))
+    return Response(json_util.dumps({
+            "message": "Forbidden",
+            "status": 401
+        }), mimetype='application/json', status=401)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -154,3 +183,8 @@ def show_post():
     # list_post = mongo.db.post.find()
     # print(list_post[0]['_id'])
     return render_template('blog.html')
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
+    app.config['TEMPLATES_AUTO_RELOAD'] = True

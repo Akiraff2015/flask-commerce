@@ -32,7 +32,6 @@ $(function() {
         const entries = Object.entries(countByItem);
         $('#listCheckout').empty();
         entries.forEach(val => {
-            console.log(cart);
             $('#listCheckout').append(`
                 <tr>
                     <td>${val[0]}</td>
@@ -73,4 +72,13 @@ $(function() {
     let arrModal = ['.modal-background', '.delete', '#shoppingCart', '#cancelBtn'];
     arrModal.forEach(val => $(val).on('click', () =>  $('.modal').toggleClass('is-active')));
 
+    $.ajax({
+        url: 'http://localhost:5000/api/products/all',
+        headers: {
+            'x-api-key': 'test',
+            'Content-Type': 'application/json'
+        },
+        method: 'GET',
+        success: data => console.log(data)
+    })
 });
