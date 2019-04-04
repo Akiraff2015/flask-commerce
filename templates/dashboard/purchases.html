@@ -1,0 +1,33 @@
+{% extends './layout/base.html' %}
+
+{% block content %}
+<h1>List of useless purchases: </h1>
+    <table class="table is-bordered is-fullwidth is-hoverable">
+        <thead>
+        <tr>
+            <th>Transaction History</th>
+            <th>Username</th>
+            <th>Items</th>
+            <th>Total Price</th>
+            <th>Shipped?</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for transaction in transactions %}
+        <tr>
+            <td>{{ transaction["_id"] }}</td>
+            <td>{{ transaction["profile"] }}</td>
+            <td>
+                <ul>
+                    {% for cart in transaction["cart"] %}
+                    <li>{{ cart.name }} - {{cart.currency}} {{ cart.price }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+            <td>{{ transaction["cart"][0].currency}} {{ transaction["total"] }}</td>
+            <td>No</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

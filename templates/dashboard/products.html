@@ -1,0 +1,27 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+ <h1>List of useless products: </h1>
+    <table class="table is-bordered is-fullwidth is-hoverable">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product["_id"] }}</td>
+            <td>{{ product["name"] }}</td>
+            <td>{{product["currency"]}} {{ product["price"] }}</td>
+            <td>{{ product["quantity"] }}</td>
+            <td>{{ product["description"] }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

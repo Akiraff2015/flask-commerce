@@ -5,6 +5,7 @@ import pymongo.errors
 from bson import json_util
 from bson.objectid import ObjectId
 import bcrypt
+import locale
 import json
 import os
 import datetime
@@ -52,16 +53,6 @@ def logout_user():
     return redirect(url_for('index'))
 
 
-@app.route('/dashboard')
-def dashboard():
-    if 'login' in session:
-        products = mongo.db.products.find({})
-        transaction = mongo.db.transaction.find({})
-        return render_template('dashboard.html', user=session['user'], products=products, transactions=transaction)
-    else:
-        return redirect(url_for('login_user'))
-
-
 @app.route('/api/products/all', methods=['GET'])
 def products_all():
     # TODO: move api key to .env or json file
@@ -81,9 +72,9 @@ def products_all():
             }), mimetype='application/json', status=203)
 
     return Response(json_util.dumps({
-            "message": "Invalid API key",
-            "status": 403
-        }), mimetype='application/json', status=403)
+        "message": "Invalid API key",
+        "status": 403
+    }), mimetype='application/json', status=403)
 
 
 @app.route('/create/product', methods=['POST'])
@@ -99,9 +90,9 @@ def create_product():
             })
             return redirect(url_for('dashboard'))
     return Response(json_util.dumps({
-            "message": "Forbidden",
-            "status": 401
-        }), mimetype='application/json', status=401)
+        "message": "Forbidden",
+        "status": 401
+    }), mimetype='application/json', status=401)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -131,15 +122,69 @@ def shop():
     return render_template('shop.html', products=products)
 
 
+# TODO: move to another folder
+def find_sum(arr, key=None):
+    sum = 0.0
+    if key is not None:
+        for val in arr:
+            sum += val[key]
+    else:
+        for val in arr:
+            sum += val['total']
+    return round(sum, 2)
+
+
+# TODO: Move to another file
+def group_number(val):
+    locale.setlocale(locale.LC_ALL, 'en_US')
+    return locale.format_string("%0.2f", val, grouping=True, monetary=True)
+
+
+@app.route('/dashboard')
+def dashboard():
+    locale.setlocale(locale.LC_ALL, 'en_US')
+    if 'login' in session:
+        products = mongo.db.products.count()
+        transaction = mongo.db.transaction.count()
+        users = mongo.db.users.count()
+
+        # Aggregation for finding total price of a products / purchases
+        find_product_price = list(
+            mongo.db.products.aggregate([{"$project": {"total": {"$multiply": ["$price", "$quantity"]}}}]))
+
+        # TODO: change document structure for transaction collection (currently does not display quantity)
+        find_purchase_price = list(
+            mongo.db.transaction.aggregate([{"$group": {"_id": None, "total": {"$sum": "$total"}}}]))
+
+        # Finding the sum after aggregation is performed
+        product_price_total = find_sum(find_product_price)
+
+        return render_template('/dashboard/index.html',
+                               user=session['user'],
+                               total_users=users,
+                               total_products=products,
+                               total_purchases=transaction,
+                               total_price_product=group_number(product_price_total),
+                               total_purchase_price=group_number(find_purchase_price[0]['total']))
+    else:
+        return redirect(url_for('login_user'))
+
+
 # TODO: Implement purchase method. Break down dashboard page
 @app.route('/dashboard/purchases', methods=['GET', 'POST'])
 def purchases():
+    if 'user' in session:
+        transaction = mongo.db.transaction.find({})
+        return render_template('/dashboard/purchases.html', user=session['user'], transactions=transaction)
     pass
 
 
 # TODO: Implement products method. Break down dashboard page
 @app.route('/dashboard/products', methods=['GET', 'POST'])
 def products():
+    if 'user' in session:
+        products = mongo.db.products.find({})
+        return render_template('/dashboard/products.html', products=products)
     pass
 
 
@@ -153,24 +198,24 @@ def checkout():
         for product in data['cart']:
             get_id_array.append(product['name'])
 
+        # Appends name of the product on get_id_array
         for i in get_id_array:
             counts[i] = counts.get(i, 0) + 1
         print(counts)
-        # mongo.db.transaction.insert({
-        #     "profile": session['login'] and session['user'] or "Guest",
-        #     "cart": data['cart'],
-        #     "total": float(data['price'])
-        # })
+        mongo.db.transaction.insert({
+            "profile": session['login'] and session['user'] or "Guest",
+            "cart": data['cart'],
+            "total": float(data['price'])
+        })
         for item in data['cart']:
             checkout_list = list(mongo.db.products.find({'_id': ObjectId(item['id'])}))
             for val in checkout_list:
-                if val['quantity'] > 0:
-                    pass
-                    # mongo.db.products.find_one_and_update(
-                    #     {'_id': ObjectId(item['id'])},
-                    #     {"$inc": {"quantity": -1}}
-                    # )
                 # TODO: Implement a message to warn the user that the product is out of stock
+                if val['quantity'] > 0:
+                    mongo.db.products.find_one_and_update(
+                        {'_id': ObjectId(item['id'])},
+                        {"$inc": {"quantity": -1}}
+                    )
                 else:
                     print("Out of stock")
         return redirect(url_for('dashboard'))

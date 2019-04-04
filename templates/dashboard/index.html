@@ -1,0 +1,96 @@
+{% extends "./layout/base.html" %}
+
+{% block content %}
+<main>
+    <h1>Quick Access Tools:</h1>
+    <div class="columns">
+        <div class="column">
+            <div class="card card-equal-height">
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-content">
+                            <p class="title is-4">Create Product</p>
+                            <button class="button is-primary btn-add-cart-position">Create Product</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="card card-equal-height">
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-content">
+                            <p class="title is-4">Total Stock: {{ total_products }}</p>
+                            <p class="title is-6 margin-bottom-3em">Total Sum: ${{ total_price_product }}</p>
+                            <button class="button is-primary btn-add-cart-position">Check Stock</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="card card-equal-height">
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-content">
+                            <p class="title is-4">Total Purchases: {{ total_purchases }}</p>
+                            <p class="title is-6 margin-bottom-3em">Total Sum: ${{ total_purchase_price }}</p>
+                            <button class="button is-primary btn-add-cart-position">Check Purchases</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="card card-equal-height">
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-content">
+                            <p class="title is-4">Registered Users: {{ total_users }}</p>
+                            <button class="button is-primary btn-add-cart-position">Manager Users</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form action="/create/product" method="POST">
+        <div class="columns">
+            <div class="column is-6 is-offset-3">
+                <h1>Create new product</h1>
+                <div class="field">
+                    <label for="name" class="label">Name</label>
+                    <input id="name" type="text" class="input" name="name">
+                </div>
+
+                <div class="field">
+                    <label for="quantity" class="label">Quantity</label>
+                    <input id="quantity" type="number" class="input" name="quantity">
+                </div>
+
+                <div class="field">
+                    <label class="label" for="price">Price</label>
+                    <input id="price" type="number" class="input" step="0.01" name="price">
+                </div>
+
+                <div class="field">
+                    <label class="label" for="currency">Currency</label>
+                    <input id="currency" class="input" type="text" name="currency" value="USD">
+                </div>
+
+                <div class="field">
+                    <label for="description" class="label">Description</label>
+                    <input id="description" class="input" type="text" name="description">
+                </div>
+
+                <input class="button is-primary" type="submit" value="Create Product">
+            </div>
+        </div>
+    </form>
+</main>
+{% endblock %}
